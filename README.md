@@ -1,5 +1,5 @@
 # ボクにもわかる さくらのモノプラットフォーム用 サンプル・プログラム集
-Examples of Sakura No Mono Platform Examples for M5Stack  
+Application Examples of Sakura No Mono Platform for M5Stack  
 forked from sakura-internet/sipf-std-client_sample_m5stack  
 
 ## サンプル・プログラム集
