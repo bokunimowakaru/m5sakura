@@ -1,4 +1,16 @@
 # sipf-std-client sample for M5Stack
+forked from sakura-internet/sipf-std-client_sample_m5stack
+
+## 権利情報
+本サンプル・プログラムは下記からフォークしたものをベースに作成しました。
+  https://github.com/sakura-internet/sipf-std-client_sample_m5stack
+
+元のソースのライセンスについては、フォーム元（さくらインターネット）に帰属し、改変部の権利は当方に帰属します（MITライセンスで再配布）。
+
+
+以下は元のソースに含まれていた情報です。
+
+-------------------------------------------------------------------------------------------------------
 
 ### はじめに
 
