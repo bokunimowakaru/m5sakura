@@ -1,5 +1,6 @@
-# sipf-std-client sample for M5Stack
-forked from sakura-internet/sipf-std-client_sample_m5stack
+# ボクにもわかる さくらのモノプラットフォーム用 サンプル・プログラム集
+Examples of Sakura No Mono Platform Examples for M5Stack  
+forked from sakura-internet/sipf-std-client_sample_m5stack  
 
 ## サンプル・プログラム集
 さくらのモノプラットフォームを利用するためのM5Stack用のサンプル・プログラム集です。  
@@ -16,8 +17,9 @@ forked from sakura-internet/sipf-std-client_sample_m5stack
 
 
 -------------------------------------------------------------------------------------------------------
-# 以下は元のソースに含まれていた情報です。  
+## 以下は元のソースに含まれていた情報です。  
 -------------------------------------------------------------------------------------------------------
+# sipf-std-client sample for M5Stack
 
 ### はじめに
 
