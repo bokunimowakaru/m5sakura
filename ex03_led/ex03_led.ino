@@ -67,10 +67,10 @@ void loop() {
         ledControl(false);                      // LED消灯
     }
     if(M5.BtnB.wasPressed()){                   // ボタンB(中央)が押されたとき
-        led_stat = true;
         rx = true;                              // 受信設定
     }
     if(M5.BtnC.wasPressed()){                   // ボタンC(右)が押されたとき
+        led_stat = true;
         ledControl(true);                       // LED点灯
     }
     if(millis() - time_prev > INTERVAL_ms){     // 30秒以上が経過した時
@@ -79,23 +79,19 @@ void loop() {
     if(rx){
         time_prev = millis();                   // 現在のマイコン時刻を保持
         sipf_drawResultWindow();                // RESULT画面の描画
-        ledControl(led_stat);                          // LED消灯
-        //M5.Lcd.printf("TX(tag_id=0x%02X temp=%f)\n", tag_id, temp);
+        ledControl(led_stat);                   // LED制御
+        M5.Lcd.printf("Requested RX data\n");   // リクエスト表示
         memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
-        static SipfObjObject objs;
-        uint64_t stm, rtm;
-        uint8_t remain, qty;
+        static SipfObjObject objs;              // 受信結果代入用の構造体
+        uint64_t stm, rtm;                      // 送信時刻,受信時刻
+        uint8_t remain, qty;                    // 残データ数,受信obj数
         int ret = SipfCmdRx(buff, &stm, &rtm, &remain, &qty, &objs, 1);
         if(ret > 0) {                           // 受信に成功した時
-            M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
-            uint8_t *p_value = objs.value;
-            SipfObjPrimitiveType v;
-            if(objs.type == OBJ_TYPE_UINT32){
-                memcpy(v.b, p_value, sizeof(uint32_t));
-                M5.Lcd.printf("Recieved: %u\r\n", v.u32);
-                led_stat = (boolean)v.u32;
-                ledControl(led_stat);                          // LED消灯
-            }
+            M5.Lcd.printf("OK\nOTID:\n%s\n", buff);
+            M5.Lcd.printf("\nRecieved: ");      // 受信結果表示
+            for(int i=0; i<4; i++) M5.Lcd.printf("%02X ",*(objs.value+i));
+            led_stat = (boolean)(*objs.value);  // 受信1バイト目を2値化
+            ledControl(led_stat);               // LED制御
         }else if(ret == 0){
             M5.Lcd.printf("RX buffer is empty.\nOK\n");
         }else{
