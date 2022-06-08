@@ -60,7 +60,7 @@ static int resetSipfModule()
   Serial.println("### MODULE OUTPUT ###");
   int len, is_echo = 0;
   for (;;) {
-    len = SipfUtilReadLine(buff, sizeof(buff), 300000); //タイムアウト300秒
+    len = SipfUtilReadLine(buff, sizeof(buff), 30000); //タイムアウト300秒→30秒
     if (len < 0) {
       return -1;  //Serialのエラーかタイムアウト
     }

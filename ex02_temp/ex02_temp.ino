@@ -26,33 +26,28 @@ void setup(){                                   // 起動時に一度だけ実�
     M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
     M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
     M5.Lcd.fillScreen(BLACK);                   // LCDを消去
-    sipf_drawTitle("Example 02 TEMP");          // LCDにタイトルを表示
+    sipf_drawTitle("Example 02 Temperature");   // LCDにタイトルを表示
     M5.Lcd.print("Booting... ");                // 起動中の表示
-    if(resetSipfModule()){                      // LTEモジュールのリセット
-        M5.Lcd.println("NG");                   // リセットの失敗時
-        return;                                 // 再起動
-    }
+    while(resetSipfModule());                   // LTEモジュールのリセット
     uint32_t fw_version;                        // バージョン保持用の変数を定義
-    SipfGetFwVersion(&fw_version);              // バージョンを取得
-    M5.Lcd.printf("\nFwVer.%08X\n",fw_version); // バージョン表示
+    M5.Lcd.print("\nFwVersion... ");            // バージョン取得表示
+    while(SipfGetFwVersion(&fw_version));       // FWバージョンを取得
+    M5.Lcd.printf("%08X\n",fw_version);         // バージョン表示
     if(fw_version < 0x000400 && SipfSetAuthMode(0x01)){ // AuthModeモード設定
         M5.Lcd.println("Auth mode... NG");      // 設定失敗時の表示
-        return;                                 // 再起動
     }
     sipf_drawButton(0, "-0.5");                 // ボタンA(左)の描画
     sipf_drawButton(1, "SEND");                 // ボタンB(中央)の描画
     sipf_drawButton(2, "+0.5");                 // ボタンC(右)の描画
     sipf_drawResultWindow();                    // RESULT画面の描画
     M5.Lcd.println("+++ Ready +++");            // 準備完了表示
-    SipfClientFlushReadBuff();                  // LTEシリアル受信バッファ消去
 }
 
 void loop() {
     boolean tx = false;                         // 送信フラグ(false:OFF)
-    byte tag_id = 0x01;                         // Tag ID を 0x01に設定
     float temp = temperatureRead() + TEMP_ADJ;  // マイコンの温度値を取得
     if(millis()%3000 == 0){                     // 3秒に1回の処理
-        M5.Lcd.printf("%.1f, ",temp);           // 温度と補正値を表示
+        M5.Lcd.printf("%.1f, ",temp);           // 温度を表示
     }
     M5.update();                                // M5Stack用IO状態の更新
     delay(1);                                   // 誤作動防止
@@ -61,21 +56,22 @@ void loop() {
         M5.Lcd.printf("%.1f(%.1f), ",temp,TEMP_ADJ); // 温度と補正値を表示
     }
     if(M5.BtnB.wasPressed()){                   // ボタンB(中央)が押されたとき
-        tx =true;                               // 送信設定
+        tx = true;                              // 送信設定
     }
     if(M5.BtnC.wasPressed()){                   // ボタンC(右)が押されたとき
         TEMP_ADJ += 0.5;                        // 温度補正値に0.5を加算
         M5.Lcd.printf("%.1f(%.1f), ",temp,TEMP_ADJ); // 温度と補正値を表示
     }
     if(millis() - time_prev > INTERVAL_ms){     // 30秒以上が経過した時
-        tx =true;                               // 送信設定
+        tx = true;                              // 送信設定
     }
     if(tx){
         time_prev = millis();                   // 現在のマイコン時刻を保持
         sipf_drawResultWindow();                // RESULT画面の描画
+        byte tag_id = 0x01;                     // Tag ID を 0x01に設定
         M5.Lcd.printf("TX(tag_id=0x%02X temp=%f)\n", tag_id, temp);
         memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
-        int ret = SipfCmdTx(0x01, OBJ_TYPE_FLOAT32, (uint8_t*)&temp, 4, buff);
+        int ret = SipfCmdTx(tag_id, OBJ_TYPE_FLOAT32, (uint8_t*)&temp, 4, buff);
         if (ret == 0) {                         // 送信に成功した時
             M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
         }else{                                  // 送信に失敗した時
