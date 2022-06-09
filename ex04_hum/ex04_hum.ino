@@ -1,6 +1,8 @@
 /******************************************************************************
-Example 02: 温度センサ送信機 for さくらモノプラットフォーム
-・M5StackのCPU温度を送信します。
+Example 04: 温湿度センサ送信機 for さくらモノプラットフォーム
+・デジタルI2Cインタフェース搭載センサから取得した温湿度を送信するIoTセンサです。
+
+    使用機材(例)：M5Sack Core + ENV II/III Unit
 
                                           Copyright (c) 2022 Wataru KUNINO
 *******************************************************************************
@@ -20,6 +22,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #define INTERVAL_ms 30000                       // 送信間隔
 static uint8_t buff[256];                       // 受信データ表示用のバッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
+unsigned long time_metric = millis();           // 同上、メータ表示用
 boolean start = true;                           // 繰り返し実行
 
 void setup(){                                   // 起動時に一度だけ実行する関数
@@ -52,10 +55,11 @@ void loop() {
     if(temp < -100. || hum < 0.) return;        // 取得失敗時に戻る
 
     boolean tx = false;                         // 送信フラグ(false:OFF)
-    if((millis()%3000 == 0) && start){            // 3秒に1回の処理
+    if(millis() - time_metric > 3000 && start){ // 3秒に1回の処理
+        time_metric = millis();                 // 現在のマイコン時刻を保持
         analogMeterNeedle(0,temp);              // メータに温度を表示
         analogMeterNeedle(1,hum);               // メータに湿度を表示
-        M5.Lcd.printf("(%.1f,%.0f), ",temp,hum); // 温度と湿度を表示
+        M5.Lcd.printf("(%.1f,%.0f),",temp,hum); // 温度と湿度を表示
     }
     M5.update();                                // M5Stack用IO状態の更新
     delay(1);                                   // 誤作動防止

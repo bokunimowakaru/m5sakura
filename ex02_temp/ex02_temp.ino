@@ -21,6 +21,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 static float TEMP_ADJ = -25.0;                  // 温度値の補正用
 static uint8_t buff[256];                       // 受信データ表示用のバッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
+unsigned long time_metric = millis();           // 同上、メータ表示用
 
 void setup(){                                   // 起動時に一度だけ実行する関数
     M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
@@ -46,7 +47,8 @@ void setup(){                                   // 起動時に一度だけ実�
 void loop() {
     boolean tx = false;                         // 送信フラグ(false:OFF)
     float temp = temperatureRead() + TEMP_ADJ;  // マイコンの温度値を取得
-    if(millis()%3000 == 0){                     // 3秒に1回の処理
+    if(millis() - time_metric > 3000){          // 3秒に1回の処理
+        time_metric = millis();                 // 現在のマイコン時刻を保持
         M5.Lcd.printf("%.1f, ",temp);           // 温度を表示
     }
     M5.update();                                // M5Stack用IO状態の更新
