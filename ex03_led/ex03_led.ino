@@ -80,7 +80,7 @@ void loop() {
     if(millis() - time_prev > INTERVAL_ms){     // 30秒以上が経過した時
         rx = true;                              // 受信設定
     }
-    if(rx){
+    if(rx){                                     // 受信フラグがTrueの時
         time_prev = millis();                   // 現在のマイコン時刻を保持
         sipf_drawResultWindow();                // RESULT画面の描画
         ledControl(led_stat);                   // LED制御

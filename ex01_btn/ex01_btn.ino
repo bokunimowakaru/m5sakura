@@ -56,7 +56,7 @@ void loop() {
         tx = true;                              // 送信設定
         value = 1;                              // 送信値を1に設定
     }
-    if(tx){
+    if(tx){                                     // 送信フラグがTrueの時
         sipf_drawResultWindow();                // RESULT画面の描画
         byte tag_id = 0x01;                     // Tag ID を 0x01に設定
         M5.Lcd.printf("TX(tag_id=0x%02X value=%d)\n", tag_id, value);

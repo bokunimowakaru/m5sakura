@@ -67,7 +67,7 @@ void loop() {
     if(millis() - time_prev > INTERVAL_ms){     // 30秒以上が経過した時
         tx = true;                              // 送信設定
     }
-    if(tx){
+    if(tx){                                     // 送信フラグがTrueの時
         time_prev = millis();                   // 現在のマイコン時刻を保持
         sipf_drawResultWindow();                // RESULT画面の描画
         byte tag_id = 0x01;                     // Tag ID を 0x01に設定
