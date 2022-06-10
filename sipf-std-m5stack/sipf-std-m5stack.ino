@@ -48,7 +48,7 @@ static int resetSipfModule()
   Serial.println("### MODULE OUTPUT ###");
   int len, is_echo = 0;
   for (;;) {
-    len = SipfUtilReadLine(buff, sizeof(buff), 300000); //タイムアウト300秒
+    len = SipfUtilReadLine(buff, sizeof(buff), 60000); //タイムアウト60秒
     if (len < 0) {
       return -1;  //Serialのエラーかタイムアウト
     }
@@ -181,7 +181,7 @@ void setup() {
   M5.Lcd.setBrightness(127);
 
   drawTitle();
-
+/*
   M5.Lcd.printf("Booting...");
   if (resetSipfModule() == 0) {
     M5.Lcd.printf(" OK\n");
@@ -204,6 +204,28 @@ void setup() {
       return;
     }
   }
+*/
+  /* returnだとloopに入ってしまうので、NGのときは繰り返すように変更 */
+
+  M5.Lcd.printf("Booting...");
+  while (resetSipfModule() != 0) {
+    M5.Lcd.printf(" FAILED\n");
+  }
+  M5.Lcd.printf("OK\nSipfGetFwVersion...");
+  uint32_t fw_version;
+  while (SipfGetFwVersion(&fw_version) != 0) {
+    M5.Lcd.printf(" FAILED\r\n");
+    delay(1000);
+  }
+  M5.Lcd.printf("%08X\n",fw_version); // バージョン表示
+  if (fw_version < 0x000400) {
+    M5.Lcd.printf("Setting auth mode...");
+    while (SipfSetAuthMode(0x01) != 0) {
+      M5.Lcd.printf(" FAILED\n");
+      delay(1000);
+    }
+  }
+  
 #ifdef ENABLE_GNSS
   M5.Lcd.printf("Enable GNSS..");
   if (SipfSetGnss(true) == 0) {
@@ -243,7 +265,11 @@ void loop() {
 #ifdef ENABLE_GNSS
   /* GNSS */
   static unsigned long last_gnss_updated = 0;
+  /*
+  下記だと最大値付近の1秒間、常に真になる
   if(last_gnss_updated + 1000 < millis()){
+  */
+  if(millis() - last_gnss_updated > 1000){
     last_gnss_updated = millis();
     GnssLocation gnss_location;
     int ret = SipfGetGnssLocation(&gnss_location);
