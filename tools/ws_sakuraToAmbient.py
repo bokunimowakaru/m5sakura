@@ -10,18 +10,22 @@
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
+token = '00000000-0000-0000-0000-000000000000'          # sakura.ioのtokenを記入
+ambient_chid='00000'                # ここにAmbientで取得したチャネルIDを入力
+ambient_wkey='0123456789abcdef'     # ここにはライトキーを入力
+ambient_interval = 29               # Ambientへの送信間隔
+
+ambient_gnss_en = True              # AmbientへGPS/GNSS位置情報を送信
+ambient_lat = 1                     # Ambient用の緯度用tag番号
+ambient_lng = 2                     # Ambient用の経度用tag番号
+
 import sys
 import websocket
 import urllib.request                           # HTTP通信ライブラリを組み込む
 import json                                     # JSON変換ライブラリを組み込む
 import datetime
 
-url = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
-token = '00000000-0000-0000-0000-000000000000'          # sakura.ioのtokenを記入
-ambient_chid='00000'                # ここにAmbientで取得したチャネルIDを入力
-ambient_wkey='0123456789abcdef'     # ここにはライトキーを入力
-ambient_interval = 29               # Ambientへの送信間隔
-
+url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
 url_s = 'https://ambidata.io/api/v2/channels/'+ambient_chid+'/data' # アクセス先
 head_dict = {'Content-Type':'application/json'} # ヘッダを変数head_dictへ
 
@@ -31,10 +35,10 @@ print('WebSocket Logger (usage:',sys.argv[0],'token)')  # タイトル表示
 if argc >= 2:                                           # 入力パラメータ数の確認
     token = sys.argv[1]                                 # トークンを設定
 
-url += token                                            # トークンを連結
-print('Listening,',url)                                 # URL表示
+url_ws += token                                         # トークンを連結
+print('Listening,',url_ws)                              # URL表示
 try:
-    sock = websocket.create_connection(url)             # ソケットを作成
+    sock = websocket.create_connection(url_ws)          # ソケットを作成
 except Exception as e:                                  # 例外処理発生時
     print(e)                                            # エラー内容を表示
     exit()                                              # プログラムの終了
@@ -103,6 +107,11 @@ while sock:                                             # 作成に成功した�
         print('tag      =', data_tag)
         print('type     =', data_type_s)
         print('value    =', data_value)                 # 受信結果(数値)の表示
+        if ambient_gnss_en:
+            if data_tag == ambient_lat:
+                body_dict['lat'] = data_value
+            if data_tag == ambient_lng:
+                body_dict['lng'] = data_value
         if data_tag > 0 and data_tag <= 8:
             key = 'd' + str(data_tag)
             body_dict[key] = data_value
