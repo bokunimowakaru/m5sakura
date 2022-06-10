@@ -9,6 +9,8 @@ forked from sakura-internet/sipf-std-client_sample_m5stack
 ### WebSocket 確認ツール Message IoT さくらのモノプラットフォーム用
   https://git.bokunimo.com/IchigoJam/message_iot/sipf.html
 
+![ボタン受信](/images/ex01_wstool.gif) ![温度受信](/images/ex02_wstool.gif) ![LED制御](/images/ex03_wstool.gif)  
+
 ## 権利情報
 本サンプル・プログラムは下記からフォークしたものをベースに作成しました。  
   https://github.com/sakura-internet/sipf-std-client_sample_m5stack
