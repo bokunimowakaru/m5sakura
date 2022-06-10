@@ -114,7 +114,7 @@ static void sipf_drawTitle(String S, int y)
 
 static void sipf_drawTitle(String S)
 {
-  sipf_drawTitle("",0);
+  sipf_drawTitle(S,0);
 }
 
 static void sipf_drawTitle(){
