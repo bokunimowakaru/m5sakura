@@ -6,10 +6,52 @@ forked from sakura-internet/sipf-std-client_sample_m5stack
 さくらのモノプラットフォームを利用するためのM5Stack用のサンプル・プログラム集です。  
 
 
+#### Example 1 ボタン送信機
+
+![ボタン送信](/images/ex01_lcd01.gif)
+![ボタン受信](/images/ex01_wstool.gif)
+
+#### Example 2 マイコン温度送信機
+
+![温度送信](/images/ex02_lcd01.gif)
+![温度受信](/images/ex02_wstool.gif)
+
+#### Example 3 LED制御
+
+![LED制御送信](/images/ex03_wstool.gif)  
+
+Valueの欄に輝度0～255を入力して M5Stackに送信すると、M5Stackに接続した RGB LED Unit のLEDの輝度が変化します。  
+RGB LED Unit が無くても、M5Stack 上に表示したLCDの電球の画像がON/OFFします。
+
+![LED制御受信](/images/ex03_lcd01.gif)
+![LED制御受信](/images/ex03_lcd02.gif)
+
+#### Example 4 温度・湿度センサ送信機
+
+M5Stack に ENVⅡ Unit または ENV Ⅲ Unit を接続してください。温度と湿度を送信します。  
+
+![温湿度送信](/images/ex04_lcd02.gif)
+![温湿度受信](/images/ex04_wstool.gif)  
+
+さくらのモノプラットフォームからAmbientやLINEアプリにデータを転送してみます。  
+
+![Ambientで受信](/images/ex04_ambient.gif)
+![LINEで受信](/images/ex04_line.gif)  
+
+#### Example 5 GPS/GNSS位置情報送信機
+
+GPS/GNSS用のアンテナ(LNA内蔵・アクティブタイプ)を接続してください。位置情報を送信します。  
+
+![GNSS送信](/images/ex05_lcd01.gif)
+![日本地図](/images/ex05_lcd02.gif)
+
+さくらのモノプラットフォームからAmbientに位置情報を転送し、詳細な地図を表示してみます。  
+
+![位置情報受信](/images/ex05_wstool.gif)
+![詳細地図](/images/ex05_ambient.gif)
+
 ### WebSocket 確認ツール Message IoT さくらのモノプラットフォーム用
   https://git.bokunimo.com/IchigoJam/message_iot/sipf.html
-
-![ボタン受信](/images/ex01_wstool.gif) ![温度受信](/images/ex02_wstool.gif) ![LED制御](/images/ex03_wstool.gif)  
 
 ## 権利情報
 本サンプル・プログラムは下記からフォークしたものをベースに作成しました。  
