@@ -10,32 +10,31 @@
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
-import sys
-import websocket
-import urllib.request                           # HTTP通信ライブラリを組み込む
-import json                                     # JSON変換ライブラリを組み込む
-import datetime
-
-url = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
-token = '00000000-0000-0000-0000-000000000000'          # sakura.ioのtokenを記入
+token = '00000000-0000-0000-0000-000000000000' # さくらのモノプラットフォームのtokenを記入
 line_token='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
                                                 # ↑ここにLINEで取得したTOKENを入力
 
-url_s = 'https://notify-api.line.me/api/notify' # アクセス先
+import sys
+import websocket
+import urllib.request                                   # HTTP通信ライブラリを組み込む
+import json                                             # JSON変換ライブラリを組み込む
+import datetime
+
+url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
+url_s = 'https://notify-api.line.me/api/notify'         # アクセス先
 head_dict = {'Authorization':'Bearer ' + line_token,
              'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-                                                # ヘッダを変数head_dictへ
-
+                                                        # ヘッダを変数head_dictへ
 argc = len(sys.argv)                                    # 引数の数をargcへ代入
 print('WebSocket Logger (usage:',sys.argv[0],'token)')  # タイトル表示
 
 if argc >= 2:                                           # 入力パラメータ数の確認
     token = sys.argv[1]                                 # トークンを設定
 
-url += token                                            # トークンを連結
-print('Listening,',url)                                 # URL表示
+url_ws += token                                         # トークンを連結
+print('Listening,',url_ws)                              # URL表示
 try:
-    sock = websocket.create_connection(url)             # ソケットを作成
+    sock = websocket.create_connection(url_ws)          # ソケットを作成
 except Exception as e:                                  # 例外処理発生時
     print(e)                                            # エラー内容を表示
     exit()                                              # プログラムの終了

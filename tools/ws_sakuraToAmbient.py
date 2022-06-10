@@ -10,7 +10,7 @@
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
-token = '00000000-0000-0000-0000-000000000000'          # sakura.ioのtokenを記入
+token = '00000000-0000-0000-0000-000000000000' # さくらのモノプラットフォームのtokenを記入
 ambient_chid='00000'                # ここにAmbientで取得したチャネルIDを入力
 ambient_wkey='0123456789abcdef'     # ここにはライトキーを入力
 ambient_interval = 29               # Ambientへの送信間隔
@@ -21,13 +21,13 @@ ambient_lng = 2                     # Ambient用の経度用tag番号
 
 import sys
 import websocket
-import urllib.request                           # HTTP通信ライブラリを組み込む
-import json                                     # JSON変換ライブラリを組み込む
+import urllib.request                                   # HTTP通信ライブラリを組み込む
+import json                                             # JSON変換ライブラリを組み込む
 import datetime
 
 url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
 url_s = 'https://ambidata.io/api/v2/channels/'+ambient_chid+'/data' # アクセス先
-head_dict = {'Content-Type':'application/json'} # ヘッダを変数head_dictへ
+head_dict = {'Content-Type':'application/json'}         # ヘッダを変数head_dictへ
 
 argc = len(sys.argv)                                    # 引数の数をargcへ代入
 print('WebSocket Logger (usage:',sys.argv[0],'token)')  # タイトル表示

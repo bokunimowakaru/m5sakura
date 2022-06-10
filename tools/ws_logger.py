@@ -10,12 +10,13 @@
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
+token = '00000000-0000-0000-0000-000000000000' # さくらのモノプラットフォームのtokenを記入
+
 import sys
 import websocket
 import datetime
 
 url = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
-token = '00000000-0000-0000-0000-000000000000'          # sakura.ioのtokenを記入
 buf_n= 128                                              # 受信バッファ容量(バイト)
 argc = len(sys.argv)                                    # 引数の数をargcへ代入
 print('WebSocket Logger (usage:',sys.argv[0],'token)')  # タイトル表示
