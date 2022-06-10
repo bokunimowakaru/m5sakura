@@ -53,30 +53,30 @@ GPS/GNSS用のアンテナ(LNA内蔵・アクティブタイプ)を接続して�
 ### WebSocket 確認ツール Message IoT さくらのモノプラットフォーム用
   https://git.bokunimo.com/IchigoJam/message_iot/sipf.html
 
+-------------------------------------------------------------------------------------------------------
+
 ## 権利情報
+
 本サンプル・プログラムは下記からフォークしたものをベースに作成しました。  
   https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 
 元のソースのライセンスについては、フォーク元（さくらインターネット）に帰属し、改変部や追加部の権利は当方に帰属します。改変部はMITライセンスで再配布いたします。画像データについては各サンプル・プログラムのフォルダ内のREADMEが付与されているファイルを参照ください  
 
+### 元のソースのREADME
 
--------------------------------------------------------------------------------------------------------
-## 以下は元のソースに含まれていた情報です。  
--------------------------------------------------------------------------------------------------------
-# sipf-std-client sample for M5Stack
+[元ソース(さくらインターネット社)のREADME](/README_sakura.md)
 
-### はじめに
+### 改変部と追加部の権利
 
-このスケッチはM5Stackから`さくらのモノプラットフォーム`を利用するためのサンプルプログラムです。  
-M5Stack COREとさくらのモノプラットフォーム標準ファームウェアを書き込んだ `M5Stack対応LTEモジュール cat.M1 nRF9160（SCO-M5SNRF9160）` との組み合わせで動作します。
+ライセンスについては各ソースリストならびに各フォルダ内のファイルに記載の通りです。  
+使用・変更・配布は可能ですが、権利表示を残してください。  
+また、提供情報や配布ソフトによって生じたいかなる被害についても，一切，補償いたしません。  
 
-導入に関しては [ご利用の流れ（SCO-M5SNRF9160)](https://manual.sakura.ad.jp/cloud/iotpf-beta/getting-started/gs-scom5snrf9160-beta.html) をご参照ください。
+[ライセンス](/LICENSE)
 
----
+----------------------------------------------------------------
+# git.bokunimo.com GitHub Pages site
+[http://git.bokunimo.com/](http://git.bokunimo.com/)  
+----------------------------------------------------------------
 
-### About
-
-This sketch is sample program of `Sakura's MONOPLATFORM` for M5Stack.  
-Target device is M5Stack Core & SCO-M5SNRF9160.
-
-Please reference for installation [ご利用の流れ（SCO-M5SNRF9160)](https://manual.sakura.ad.jp/cloud/iotpf-beta/getting-started/gs-scom5snrf9160-beta.html). (in Japanese)
+by 国野 亘 Wataru KUNINO <https://bokunimo.net/>
