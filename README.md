@@ -54,14 +54,14 @@ GPS(GNSS)用のアンテナ(LNA内蔵・アクティブタイプ)を接続して
 ![詳細地図](/images/ex05_ambient.gif)
 
 ### WebSocket 確認ツール Message IoT さくらのモノプラットフォーム用
-  https://git.bokunimo.com/IchigoJam/message_iot/sipf.html
+  [https://git.bokunimo.com/IchigoJam/message_iot/sipf.html](https://git.bokunimo.com/IchigoJam/message_iot/sipf.html)
 
 -------------------------------------------------------------------------------------------------------
 
 ## 権利情報
 
 本サンプル・プログラムは下記からフォークしたものをベースに作成しました。  
-  https://github.com/sakura-internet/sipf-std-client_sample_m5stack
+  [https://github.com/sakura-internet/sipf-std-client_sample_m5stack](https://github.com/sakura-internet/sipf-std-client_sample_m5stack)
 
 元のソースのライセンスについては、フォーク元（さくらインターネット）に帰属し、改変部や追加部の権利は当方に帰属します。改変部はMITライセンスで再配布いたします。画像データについては各サンプル・プログラムのフォルダ内のREADMEが付与されているファイルを参照ください  
 
