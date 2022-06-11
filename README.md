@@ -4,6 +4,9 @@ forked from sakura-internet/sipf-std-client_sample_m5stack
 
 ## サンプル・プログラム集
 さくらのモノプラットフォームを利用するためのM5Stack用のサンプル・プログラム集です。  
+LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) をM5Stackに接続し、モバイル通信網にセンサ情報を送信したり、M5Stackに接続したLEDを制御してみます。  
+
+![GPS(GNSS)位置情報送信](/images/ex05_gnss.gif)
 
 
 #### Example 1 ボタン送信機
@@ -38,11 +41,11 @@ M5Stack に ENVⅡ Unit または ENV Ⅲ Unit を接続してください。温
 ![Ambientで受信](/images/ex04_ambient.gif)
 ![LINEで受信](/images/ex04_line.gif)  
 
-#### Example 5 GPS/GNSS位置情報送信機
+#### Example 5 GPS(GNSS)位置情報送信機
 
-GPS/GNSS用のアンテナ(LNA内蔵・アクティブタイプ)を接続してください。位置情報を送信します。  
+GPS(GNSS)用のアンテナ(LNA内蔵・アクティブタイプ)を接続してください。位置情報を送信します。  
 
-![GNSS送信](/images/ex05_lcd01.gif)
+![GPS(GNSS)送信](/images/ex05_lcd01.gif)
 ![日本地図](/images/ex05_lcd02.gif)
 
 さくらのモノプラットフォームからAmbientに位置情報を転送し、詳細な地図を表示してみます。  
