@@ -4,7 +4,7 @@
 # Copyright (c) 2022 Wataru KUNINO
 #
 # 引用
-# https://github.com/bokunimowakaru/iot/blob/master/server/udp_sender.py
+# https://github.com/bokunimowakaru/iot/blob/master/server/ws_logger_sakura.py
 # https://github.com/bokunimowakaru/RaspberryPi/blob/master/network/sakura/ws_logger.py
 ################################################################################
 # 下記のライブラリが必要です
