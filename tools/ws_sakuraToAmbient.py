@@ -10,7 +10,45 @@
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
+################################################################################
+# さくらのモノプラットフォーム登録手順
+# (参考文献) 詳細は下記を参照ください
+#   さくらインターネット社 Sakura Cloud Docs さくらのモノプラットフォーム
+#   https://manual.sakura.ad.jp/cloud/manual-iotpf.html
+################################################################################
+# 1. さくらのクラウド用コントロールパネルにアクセスしてください。
+#     https://secure.sakura.ad.jp/cloud/
+# 2. モノプラットフォームで「プロジェクト」を作成してください。
+# 3. セキュアモバイルコネクトのメニュー「SIM」でモジュールの登録をします。
+#   ※月額13円/デバイスと通信料6円/MBの費用が発生します。
+#   - ICCIDとPASSCODEはモジュールの裏面に書かれています(半田付け前に要確認)
+#   - SIMの状態は「有効」を選択します
+#   - キャリアは「Softbank」を選択します(執筆時点SCO-M5SNRF9160のファームの場合)
+#   - 接続先はモノプラットフォームを選択します
+#   - プロジェクトでは、2で作成したプロジェクト名を選択してください
+# 4. モノプラットフォームで「サービスアダプタ」を登録してください。
+#   ※基本利用月額220円/デバイスとサービスアダプタ月額11円/デバイスが発生します
+#   - プロジェクトでは、2で作成したプロジェクト名を選択してください
+#   - サービスアダプタには「websocket」を選択してください
+# 5. 「サービスアダプタ」の情報画面でトークンを確認してください。
+#   - モノプラットフォームの「サービスアダプタ」でプロジェクト名をダブルクリック
+#   - 「xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx」の形式で表示される
+# 6. 下記の「token=」の部分にトークンを転記してください。
+
 token = '00000000-0000-0000-0000-000000000000' # さくらのモノプラットフォームのtokenを記入
+
+################################################################################
+# Ambient 設定手順
+# (参考文献)
+#    IoTデータ可視化サービスAmbient(アンビエントデーター社) https://ambidata.io/
+################################################################################
+# 1. https://ambidata.io/ へアクセス
+# 2. 右上の[ユーザ登録(無料)]ボタンでメールアドレス、パスワードを設定して
+#    アカウントを登録
+# 3. [チャネルを作る]ボタンでチャネルIDを新規作成する
+# 4. 「チャネルID」を下記のambient_chidのシングルコート(')内に転記する
+# 5. 「ライトキー」を下記のambient_wkeyのシングルコート(')内に転記する
+
 ambient_chid='00000'                # ここにAmbientで取得したチャネルIDを入力
 ambient_wkey='0123456789abcdef'     # ここにはライトキーを入力
 ambient_interval = 29               # Ambientへの送信間隔
@@ -19,14 +57,14 @@ ambient_gnss_en = True              # AmbientへGPS/GNSS位置情報を送信
 ambient_lat = 1                     # Ambient用の緯度用tag番号
 ambient_lng = 2                     # Ambient用の経度用tag番号
 
-import sys
-import websocket
+import sys                                              # 引数の入力に使用
+import websocket                                        # WebSocketクライアント組み込み
 import urllib.request                                   # HTTP通信ライブラリを組み込む
 import json                                             # JSON変換ライブラリを組み込む
-import datetime
+import datetime                                         # 日時の取得に使用
 
-url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
-url_s = 'https://ambidata.io/api/v2/channels/'+ambient_chid+'/data' # アクセス先
+url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'           # アクセス先(さくら,WebSocket)
+url_s = 'https://ambidata.io/api/v2/channels/'+ambient_chid+'/data' # アクセス先(Ambient)
 head_dict = {'Content-Type':'application/json'}         # ヘッダを変数head_dictへ
 
 argc = len(sys.argv)                                    # 引数の数をargcへ代入

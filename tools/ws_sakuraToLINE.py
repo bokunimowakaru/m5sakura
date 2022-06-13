@@ -1,27 +1,64 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # さくらのモノプラットフォーム用のWebSocketを受信し、LINE Notifyへ転送する
-# Copyright (c) 2019-2022 Wataru KUNINO
+# Copyright (c) 2022 Wataru KUNINO
 #
 # 引用
-# https://github.com/bokunimowakaru/iot/blob/master/server/ws_logger_sakura.py
+# https://github.com/bokunimowakaru/iot/blob/master/server/udp_sender.py
 # https://github.com/bokunimowakaru/RaspberryPi/blob/master/network/sakura/ws_logger.py
 ################################################################################
 # 下記のライブラリが必要です
 # pip3 install websocket-client
 
+################################################################################
+# さくらのモノプラットフォーム登録手順
+# (参考文献) 詳細は下記を参照ください
+#   さくらインターネット社 Sakura Cloud Docs さくらのモノプラットフォーム
+#   https://manual.sakura.ad.jp/cloud/manual-iotpf.html
+################################################################################
+# 1. さくらのクラウド用コントロールパネルにアクセスしてください。
+#     https://secure.sakura.ad.jp/cloud/
+# 2. モノプラットフォームで「プロジェクト」を作成してください。
+# 3. セキュアモバイルコネクトのメニュー「SIM」でモジュールの登録をします。
+#   ※月額13円/デバイスと通信料6円/MBの費用が発生します。
+#   - ICCIDとPASSCODEはモジュールの裏面に書かれています(半田付け前に要確認)
+#   - SIMの状態は「有効」を選択します
+#   - キャリアは「Softbank」を選択します(執筆時点SCO-M5SNRF9160のファームの場合)
+#   - 接続先はモノプラットフォームを選択します
+#   - プロジェクトでは、2で作成したプロジェクト名を選択してください
+# 4. モノプラットフォームで「サービスアダプタ」を登録してください。
+#   ※基本利用月額220円/デバイスとサービスアダプタ月額11円/デバイスが発生します
+#   - プロジェクトでは、2で作成したプロジェクト名を選択してください
+#   - サービスアダプタには「websocket」を選択してください
+# 5. 「サービスアダプタ」の情報画面でトークンを確認してください。
+#   - モノプラットフォームの「サービスアダプタ」でプロジェクト名をダブルクリック
+#   - 「xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx」の形式で表示される
+# 6. 下記の「token=」の部分にトークンを転記してください。
+
 token = '00000000-0000-0000-0000-000000000000' # さくらのモノプラットフォームのtokenを記入
+
+################################################################################
+# LINE Notify 設定手順
+################################################################################
+# 1. https://notify-bot.line.me/ へアクセス
+# 2. 右上のアカウントメニューから「マイページ」を選択
+# 3. トークン名「esp32」を入力
+# 4. 送信先のトークルームを選択する(「1:1でLINE Notifyから通知を受け取る」等)
+# 5. [発行する]ボタンでトークンが発行される
+# 6. [コピー]ボタンでクリップボードへコピー
+# 7. 下記のline_tokenのシングルコート(')内に転記する
+
 line_token='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
                                                 # ↑ここにLINEで取得したTOKENを入力
 
-import sys
-import websocket
+import sys                                              # 引数の入力に使用
+import websocket                                        # WebSocketクライアント組み込み
 import urllib.request                                   # HTTP通信ライブラリを組み込む
 import json                                             # JSON変換ライブラリを組み込む
-import datetime
+import datetime                                         # 日時の取得に使用
 
-url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'
-url_s = 'https://notify-api.line.me/api/notify'         # アクセス先
+url_ws = 'wss://ws.sipf.iot.sakura.ad.jp/v0/'           # アクセス先(さくら,websocket)
+url_s = 'https://notify-api.line.me/api/notify'         # アクセス先(LINE)
 head_dict = {'Authorization':'Bearer ' + line_token,
              'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
                                                         # ヘッダを変数head_dictへ
