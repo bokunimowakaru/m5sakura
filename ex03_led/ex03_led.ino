@@ -27,6 +27,7 @@ unsigned long time_prev = millis()-INTERVAL_ms; // CPU時刻(ms単位)の30秒�
 /*  起動直後に受信を実行するために30秒を減算する。起動直後なので計算結果は
     マイナスになるが、time_prevは符号なし変数なので巨大なプラス値になる。
     判定時は現在時刻から巨大time_prev値を減算する。一周して適正値になる。*/
+int timeout_n = 0;                              // 通信タイムアウト回数
 byte led_stat = 0;                              // LED点灯輝度(0～255)
 
 void ledControl(byte val){                      // LED制御関数(val=輝度)
@@ -38,13 +39,7 @@ void ledControl(byte val){                      // LED制御関数(val=輝度)
     }
 }
 
-void setup(){                                   // 起動時に一度だけ実行する関数
-    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
-    M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
-    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
-    ws2812_led_setup(PIN_LED_RGB);              // RGB LED 初期設定(ポート設定)
-    sipf_drawTitle("Example 03 LED");           // LCDにタイトルを表示
-
+void reset(){                                   // LTEモジュールのリセット
     M5.Lcd.print("Booting... ");                // 起動中の表示
     while(resetSipfModule());                   // LTEモジュールのリセット
     uint32_t fw_version;                        // バージョン保持用の変数を定義
@@ -54,6 +49,15 @@ void setup(){                                   // 起動時に一度だけ実�
     if(fw_version < 0x000400 && SipfSetAuthMode(0x01)){ // AuthModeモード設定
         M5.Lcd.println("Auth mode... NG");      // 設定失敗時の表示
     }
+}
+
+void setup(){                                   // 起動時に一度だけ実行する関数
+    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
+    M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
+    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
+    ws2812_led_setup(PIN_LED_RGB);              // RGB LED 初期設定(ポート設定)
+    sipf_drawTitle("Example 03 LED");           // LCDにタイトルを表示
+    reset();                                    // 関数リセットを呼び出し
     sipf_drawButton(0, "OFF");                  // ボタンA(左)の描画
     sipf_drawButton(1, "RX");                   // ボタンB(中央)の描画
     sipf_drawButton(2, "ON");                   // ボタンC(右)の描画
@@ -100,7 +104,16 @@ void loop() {
         }else if(ret == 0){
             M5.Lcd.printf("RX buffer is empty.\nOK\n");
         }else{
-            M5.Lcd.printf("NG: %d\n", ret);
+            if(ret == -3){                      // タイムアウト発生時
+                timeout_n++;                    // タイムアウト数をカウント
+            }else{                              // 発生しなかったとき
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
+            M5.Lcd.printf("NG: %d(%d)\n", ret, timeout_n); // 応答値を表示
+            if(timeout_n >= 3){                 // 3回連続でタイムアウト
+                reset();                        // 関数リセットを呼び出し
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
         }
     }
 }

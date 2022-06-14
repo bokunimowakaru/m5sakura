@@ -24,15 +24,9 @@ static uint8_t buff[256];                       // 受信データ表示用の�
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
 boolean start = true;                           // 繰り返し実行
+int timeout_n = 0;                              // 通信タイムアウト回数
 
-void setup(){                                   // 起動時に一度だけ実行する関数
-    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
-    M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
-    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
-    shtSetup();                                 // 湿度センサの初期化
-    analogMeterInit("Celsius",0,40,"RH%",0,100); //メータ初期化
-    analogMeterSetNames("Temp.","Humi.");       // メータのタイトルを登録
-    sipf_drawTitle("Example 04 Humidity",88);   // LCDにタイトルを表示
+void reset(){                                   // LTEモジュールのリセット
     M5.Lcd.print("Booting... ");                // 起動中の表示
     while(resetSipfModule());                   // LTEモジュールのリセット
     uint32_t fw_version;                        // バージョン保持用の変数を定義
@@ -42,6 +36,17 @@ void setup(){                                   // 起動時に一度だけ実�
     if(fw_version < 0x000400 && SipfSetAuthMode(0x01)){ // AuthModeモード設定
         M5.Lcd.println("Auth mode... NG");      // 設定失敗時の表示
     }
+}
+
+void setup(){                                   // 起動時に一度だけ実行する関数
+    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
+    M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
+    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
+    shtSetup();                                 // 湿度センサの初期化
+    analogMeterInit("Celsius",0,40,"RH%",0,100); //メータ初期化
+    analogMeterSetNames("Temp.","Humi.");       // メータのタイトルを登録
+    sipf_drawTitle("Example 04 Humidity",88);   // LCDにタイトルを表示
+    reset();                                    // 関数リセットを呼び出し
     sipf_drawButton(0, "STOP");                 // ボタンA(左)の描画
     sipf_drawButton(1, "SEND");                 // ボタンB(中央)の描画
     sipf_drawButton(2, "START");                // ボタンC(右)の描画
@@ -91,7 +96,16 @@ void loop() {
         if (ret == 0) {                         // 送信に成功した時
             M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
         }else{                                  // 送信に失敗した時
-            M5.Lcd.printf("NG: %d\n", ret);     // 応答値を表示
+            if(ret == -3){                      // タイムアウト発生時
+                timeout_n++;                    // タイムアウト数をカウント
+            }else{                              // 発生しなかったとき
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
+            M5.Lcd.printf("NG: %d(%d)\n", ret, timeout_n); // 応答値を表示
+            if(timeout_n >= 3){                 // 3回連続でタイムアウト
+                reset();                        // 関数リセットを呼び出し
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
         }
     }
 }

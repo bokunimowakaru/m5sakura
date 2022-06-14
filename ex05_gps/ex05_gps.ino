@@ -51,6 +51,7 @@ const float japan[JpMAP_N][4]={
 static uint8_t buff[256];                       // 受信データ表示用のバッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
+int timeout_n = 0;                              // 通信タイムアウト回数
 float lat =  35.+40./60.+37.8311/3600.;         // 緯度の初期値
 float lon = 139.+44./60.+51.5282/3600.;         // 経度の初期値
 float alt = 0.;                                 // 高度の初期値
@@ -109,11 +110,7 @@ void disp_point(float lat, float lon){          // 緯度経度の位置に点�
     }
 }
 
-void setup(){                                   // 起動時に一度だけ実行する関数
-    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
-    M5.Lcd.setBrightness(255);                  // LCDを最大輝度に設定
-    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
-    sipf_drawTitle(TITLE);                      // LCDにタイトルを表示
+void reset(){                                   // LTEモジュールのリセット
     M5.Lcd.print("Booting... ");                // 起動中の表示
     while(resetSipfModule());                   // LTEモジュールのリセット
     uint32_t fw_version;                        // バージョン保持用の変数を定義
@@ -123,7 +120,15 @@ void setup(){                                   // 起動時に一度だけ実�
     if(fw_version < 0x000400 && SipfSetAuthMode(0x01)){ // AuthModeモード設定
         M5.Lcd.println("Auth mode... NG");      // 設定失敗時の表示
     }
-    M5.Lcd.printf("Enable GNSS... ");
+}
+
+void setup(){                                   // 起動時に一度だけ実行する関数
+    M5.Lcd.begin();                             // M5Stack用Lcdライブラリの起動
+    M5.Lcd.setBrightness(255);                  // LCDを最大輝度に設定
+    M5.Lcd.fillScreen(BLACK);                   // LCDを消去
+    sipf_drawTitle(TITLE);                      // LCDにタイトルを表示
+    reset();                                    // 関数リセットを呼び出し
+    M5.Lcd.printf("Enable GNSS... ");           // 起動中表示
     while(SipfSetGnss(true));                   // GNSS/GPSの起動
     disp(false);                                // 画面描画
     M5.Lcd.println("+++ Ready +++");            // 準備完了表示
@@ -174,7 +179,16 @@ void loop() {
         if (ret == 0) {                         // 送信に成功した時
             M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
         }else{                                  // 送信に失敗した時
-            M5.Lcd.printf("NG: %d\n", ret);     // 応答値を表示
+            if(ret == -3){                      // タイムアウト発生時
+                timeout_n++;                    // タイムアウト数をカウント
+            }else{                              // 発生しなかったとき
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
+            M5.Lcd.printf("NG: %d(%d)\n", ret, timeout_n); // 応答値を表示
+            if(timeout_n >= 3){                 // 3回連続でタイムアウト
+                reset();                        // 関数リセットを呼び出し
+                timeout_n = 0;                  // タイムアウト数を0に戻す
+            }
         }
     }
 }
