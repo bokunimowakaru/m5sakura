@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # さくらのモノプラットフォーム用のWebSocketを受信し、Ambientへ転送する
-# Copyright (c) 2019-2022 Wataru KUNINO
+# Copyright (c) 2022 Wataru KUNINO
 #
 # 引用
 # https://github.com/bokunimowakaru/iot/blob/master/server/ws_logger_sakura.py
