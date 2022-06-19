@@ -83,83 +83,84 @@ if argc >= 2:                                           # 入力パラメータ�
     token = sys.argv[1]                                 # トークンを設定
 
 url_ws += token                                         # トークンを連結
-print('Listening,',url_ws)                              # URL表示
-try:
-    sock = websocket.create_connection(url_ws)          # ソケットを作成
-except Exception as e:                                  # 例外処理発生時
-    print(e)                                            # エラー内容を表示
-    exit()                                              # プログラムの終了
-print('CONNECTED')
-
-while sock:                                             # 作成に成功したとき
-    res=sock.recv()                                     # WebSocketを取得
-    date=datetime.datetime.today()                      # 日付を取得
-    print(date.strftime('%Y/%m/%d %H:%M'), end='')      # 日付を出力
-    print(', '+res)                                     # 受信データを出力
-    res_dict = json.loads(res)                          # 辞書型の変数res_dictへ
-    res_type = res_dict.get('type')                     # res_dict内のtypeを取得
-    if res_type == 'keepalive':                         # typeがkeepaliveのとき
-        continue
-    if res_type != 'object':                            # typeがobjectでないとき
-        continue
-    res_id = res_dict.get('device_id')                  # res_dict内のmoduleを取得
-    print('from     =',res_id)
-    data_time = res_dict.get('timestamp_platform_from_src')
-    print('datetime =', data_time)
-    res_payload_dict = res_dict['payload']              # res_dict内のpayload取得
-    data_dict = dict()                                  # 受信データ用の辞書型変数
-    for data in res_payload_dict:                       # 各チャネルに対して
-        print('--------------------------------------')
-        data_type = data.get('type')
-        try:
-            data_tag = int('0x' + data.get('tag'),0)
-        except ValueError:
-            data_tag= 0
-        data_type_s= 'Unknown'
-        data_value = None
-        # 各種OBJECT_TYPE
-        # https://manual.sakura.ad.jp/cloud/iotpf/device-adapter/sipf_obj_cmd_guide.html#object-type-list-label
-        if data_type[0:5] == 'float' :
-            data_type_s= 'Float'
-            try:
-                data_value = float(data['value'])
-                data_dict[data_tag] = data_value
-            except ValueError:
-                data_type_s= 'Unknown'
-        if data_type[0:3] == 'int' or data_type[0:4] == 'uint':
-            data_type_s= 'Integer'
-            try:
-                data_value = int(data['value'])
-                data_dict[data_tag] = data_value
-            except ValueError:
-                data_type_s= 'Unknown'
-        if data_type == 'string_utf8':
-            data_type_s= 'String'
-            data_dict[data_tag] = data['value']
-        if data_type == 'binary':
-            continue
-        print('tag      =', data_tag)
-        print('type     =', data_type_s)
-        print('value    =', data_value)                 # 受信結果(数値)の表示
-    if len(data_dict) == 0:
-        continue
-
-    # UDP送信
-    data_csv=''
-    for i in sorted(data_dict):
-        if len(data_csv) > 0:
-            data_csv += ', '
-        data_csv += str(data_dict[i])
+while True:
+    print('Listening,',url_ws)                              # URL表示
     try:
-        udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # ソケットを作成
-        udp.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST,1)
-    except Exception as e:                              # 例外処理発生時
-        print(e)                                        # エラー内容を表示
-        continue                                        # プログラムの終了
-    if udp:                                             # 作成に成功したとき
-        udp_csv = DEVICE + ', ' + data_csv
-        print('udp: ' + data_csv)
-        udp_payload=(udp_csv + '\n').encode()           # 改行追加とバイト列変換
-        udp.sendto(udp_payload, (udp_to,udp_port))      # UDP送信
-        udp.close()                                     # ソケットの切断
-sock.close()                                            # ソケットの切断
+        sock = websocket.create_connection(url_ws)          # ソケットを作成
+    except Exception as e:                                  # 例外処理発生時
+        print(e)                                            # エラー内容を表示
+        continue                                            # 再接続
+    print('CONNECTED')
+
+    while sock:                                             # 作成に成功したとき
+        res=sock.recv()                                     # WebSocketを取得
+        date=datetime.datetime.today()                      # 日付を取得
+        print(date.strftime('%Y/%m/%d %H:%M'), end='')      # 日付を出力
+        print(', '+res)                                     # 受信データを出力
+        res_dict = json.loads(res)                          # 辞書型の変数res_dictへ
+        res_type = res_dict.get('type')                     # res_dict内のtypeを取得
+        if res_type == 'keepalive':                         # typeがkeepaliveのとき
+            continue
+        if res_type != 'object':                            # typeがobjectでないとき
+            continue
+        res_id = res_dict.get('device_id')                  # res_dict内のmoduleを取得
+        print('from     =',res_id)
+        data_time = res_dict.get('timestamp_platform_from_src')
+        print('datetime =', data_time)
+        res_payload_dict = res_dict['payload']              # res_dict内のpayload取得
+        data_dict = dict()                                  # 受信データ用の辞書型変数
+        for data in res_payload_dict:                       # 各チャネルに対して
+            print('--------------------------------------')
+            data_type = data.get('type')
+            try:
+                data_tag = int('0x' + data.get('tag'),0)
+            except ValueError:
+                data_tag= 0
+            data_type_s= 'Unknown'
+            data_value = None
+            # 各種OBJECT_TYPE
+            # https://manual.sakura.ad.jp/cloud/iotpf/device-adapter/sipf_obj_cmd_guide.html#object-type-list-label
+            if data_type[0:5] == 'float' :
+                data_type_s= 'Float'
+                try:
+                    data_value = float(data['value'])
+                    data_dict[data_tag] = data_value
+                except ValueError:
+                    data_type_s= 'Unknown'
+            if data_type[0:3] == 'int' or data_type[0:4] == 'uint':
+                data_type_s= 'Integer'
+                try:
+                    data_value = int(data['value'])
+                    data_dict[data_tag] = data_value
+                except ValueError:
+                    data_type_s= 'Unknown'
+            if data_type == 'string_utf8':
+                data_type_s= 'String'
+                data_dict[data_tag] = data['value']
+            if data_type == 'binary':
+                continue
+            print('tag      =', data_tag)
+            print('type     =', data_type_s)
+            print('value    =', data_value)                 # 受信結果(数値)の表示
+        if len(data_dict) == 0:
+            continue
+
+        # UDP送信
+        data_csv=''
+        for i in sorted(data_dict):
+            if len(data_csv) > 0:
+                data_csv += ', '
+            data_csv += str(data_dict[i])
+        try:
+            udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # ソケットを作成
+            udp.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST,1)
+        except Exception as e:                              # 例外処理発生時
+            print(e)                                        # エラー内容を表示
+            continue                                        # プログラムの終了
+        if udp:                                             # 作成に成功したとき
+            udp_csv = DEVICE + ', ' + data_csv
+            print('udp: ' + data_csv)
+            udp_payload=(udp_csv + '\n').encode()           # 改行追加とバイト列変換
+            udp.sendto(udp_payload, (udp_to,udp_port))      # UDP送信
+            udp.close()                                     # ソケットの切断
+    sock.close()                                            # ソケットの切断
