@@ -75,7 +75,7 @@ while True:
         sock = websocket.create_connection(url_ws)          # ソケットを作成
     except Exception as e:                                  # 例外処理発生時
         print(e)                                            # エラー内容を表示
-        exit()                                              # プログラムの終了
+        continue                                            # 再接続
     print('CONNECTED')
 
     while sock:                                             # 作成に成功したとき
@@ -86,9 +86,9 @@ while True:
         res_dict = json.loads(res)                          # 辞書型の変数res_dictへ
         res_type = res_dict.get('type')                     # res_dict内のtypeを取得
         if res_type == 'keepalive':                         # typeがkeepaliveのとき
-            continue
+            continue                                        # WebSocket受信の継続
         if res_type != 'object':                            # typeがobjectでないとき
-            continue
+            continue                                        # WebSocket受信の継続
         res_id = res_dict.get('device_id')                  # res_dict内のmoduleを取得
         print('from     =',res_id)
         data_time = res_dict.get('timestamp_platform_from_src')
@@ -144,7 +144,7 @@ while True:
 
         print('Message  =', '"' + data_text + '"')          # 受信結果(文字列)の表示
         if len(data_text) == 0:
-            continue
+            continue                                        # WebSocket受信の継続
 
         # LINEへ送信
         body = 'message=さくらモノプラットフォームから ' + data_text + ' を受信しました。'
@@ -157,7 +157,7 @@ while True:
             res = urllib.request.urlopen(post)              # HTTPアクセスを実行
         except Exception as e:                              # 例外処理発生時
             print(e,url_s)                                  # エラー内容と変数url_sを表示
-            exit()                                          # プログラムの終了
+            continue                                        # WebSocket受信の継続
         res_str = res.read().decode()                       # 受信テキストを変数res_strへ
         res.close()                                         # HTTPアクセスの終了
         if len(res_str):                                    # 受信テキストがあれば

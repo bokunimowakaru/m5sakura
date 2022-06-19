@@ -156,7 +156,7 @@ while True:
             udp.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST,1)
         except Exception as e:                              # 例外処理発生時
             print(e)                                        # エラー内容を表示
-            continue                                        # プログラムの終了
+            continue                                        # WebSocket受信の継続
         if udp:                                             # 作成に成功したとき
             udp_csv = DEVICE + ', ' + data_csv
             print('udp: ' + data_csv)
