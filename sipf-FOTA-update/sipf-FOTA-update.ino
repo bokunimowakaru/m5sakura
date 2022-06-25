@@ -1,3 +1,21 @@
+/******************************************************************************
+モバイル網経由のファームウェア・アップデータです。
+
+
+                                          Copyright (c) 2022 Wataru KUNINO
+*******************************************************************************
+【参考文献】さくらインターネット(SAKURA internet Inc.) GitHubページ
+https://github.com/sakura-internet/sipf-std-client_sample_m5stack
+/blob/main/sipf-std-m5stack/sipf-std-m5stack.ino
+*/
+/*
+ * Copyright (c) 2021 Sakura Internet Inc.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+/*****************************************************************************/
+
+
 /*
  * Copyright (c) 2021 Sakura Internet Inc.
  *
@@ -113,6 +131,14 @@ static void drawButton(uint8_t button, uint32_t value)
   }
 }
 
+static void drawButton(uint8_t button, String S)
+{
+  M5.Lcd.fillRect(35 + (95 * button), 200, 60, 40, 0xfaae);
+  M5.Lcd.setTextColor(TFT_BLACK, 0xfaae);
+  M5.Lcd.drawCentreString(S, 65 + (95 * button), 210, 1);
+}
+
+
 static void setCursorResultWindow(void)
 {
   M5.Lcd.setTextColor(TFT_BLACK, 0xce79);
@@ -132,6 +158,29 @@ static void drawResultWindow(void)
   setCursorResultWindow();
 }
 
+void reset(){
+  M5.Lcd.printf("Booting...");
+  while (resetSipfModule() != 0) {
+    M5.Lcd.printf(" FAILED\n");
+    return;
+  }
+  M5.Lcd.printf(" OK\n");
+}
+
+void getVer(){
+    uint32_t fw_version;                        // バージョン保持用の変数を定義
+    M5.Lcd.print("FwVersion... ");            // バージョン取得表示
+    while(SipfGetFwVersion(&fw_version)){       // バージョンを取得
+	    M5.Lcd.printf(" FAILED\r\n");
+	    delay(1000);
+	    return;
+    }
+    M5.Lcd.printf("%08X\n",fw_version);         // バージョン表示
+    if(fw_version < 0x000400 && SipfSetAuthMode(0x01)){ // AuthModeモード設定
+        M5.Lcd.println("Auth mode... NG");      // 設定失敗時の表示
+    }
+}
+
 void setup() {
   // put your setup code here, to run once:
   M5.begin();
@@ -143,25 +192,9 @@ void setup() {
 
   drawTitle();
 
-  M5.Lcd.printf("Booting...");
-  while (resetSipfModule() != 0) {
-    M5.Lcd.printf(" FAILED\n");
-  }
+  reset();
+  getVer();
 
-  M5.Lcd.printf("OK\nSipfGetFwVersion...");
-  uint32_t fw_version;
-  while (SipfGetFwVersion(&fw_version) != 0) {
-    M5.Lcd.printf(" FAILED\r\n");
-    delay(1000);
-  }
-  M5.Lcd.printf("%08X\n",fw_version);         // バージョン表示
-
-  if (fw_version < 0x000400) {
-    M5.Lcd.printf("Setting auth mode...");
-    while (SipfSetAuthMode(0x01) != 0) {
-      M5.Lcd.printf(" FAILED\n");
-    }
-  }
   drawResultWindow();
   M5.Lcd.println("+++ Ready +++");
   M5.Lcd.println("Hello, Press [Right] button to update firmware");
@@ -169,8 +202,8 @@ void setup() {
   cnt_btn1 = 0;
 
   drawButton(0, cnt_btn1);
-  drawButton(1, 0);
-  drawButton(2, 0);
+  drawButton(1, "RESET");
+  drawButton(2, "FOTA");
 
   SipfClientFlushReadBuff();
 }
@@ -212,6 +245,10 @@ void loop() {
   /* `RX'ボタンを押した */
   if (M5.BtnB.wasPressed()) {
     drawResultWindow();
+    M5.Lcd.printf("ButtonB pushed: RESET & Get Version.\n");
+    reset();
+    getVer();
+  /*
     M5.Lcd.printf("ButtonB pushed: RX request.\n");
     memset(buff, 0, sizeof(buff));
 
@@ -305,6 +342,7 @@ void loop() {
     } else {
       M5.Lcd.printf("NG: %d\n", ret);
     }
+  */
   }
 
   /* `FOTA'ボタンを押した */
@@ -329,13 +367,28 @@ void loop() {
             delay(1000);
             M5.Lcd.print("UPDATE... ");
             SipfClientFlushReadBuff();
-            len = sprintf(cmd, "$UPDATE UPDATE\r\n");
+            len = sprintf(cmd, "$$UPDATE UPDATE\r\n");
             ret = Serial2.write((uint8_t*)cmd, len);
+            int num=0,n;
             for (;;) {
+                n = 0;
                 ret = SipfUtilReadLine((uint8_t*)cmd, sizeof(cmd), 10000);
-                if(memcmp(cmd, "FOTA ", 5) == 0) drawResultWindow();
-                if(cmd[0]>='0' and cmd[0]<='9' and  cmd[1]=='0') drawResultWindow();
-                M5.Lcd.println(cmd);
+                if(ret < 3) continue;
+                if(memcmp(cmd, "FOTA ", 5) == 0 || memcmp(cmd, "*** ", 4) == 0) drawResultWindow();
+                if(cmd[1]>='1' and cmd[1]<='9'){
+                    n = 10 * (cmd[1] - '0') + (cmd[2] - '0');
+                    if(cmd[2]=='0' && n != num) drawResultWindow();
+                }
+                if(cmd[1]==' ' and cmd[2]>='0' and cmd[1]<='9'){
+                    n = cmd[2] - '0';
+                }
+                if(cmd[0]>='0' and cmd[0]<='9' and  cmd[1]=='9') drawResultWindow();
+                char *p = strstr(cmd, "\r");
+                if(p) *p = '\0';
+                p = strstr(cmd, "\n");
+                if(p) *p = '\0';
+                if(n==0 || n != num) M5.Lcd.println(cmd);
+                num = n;
                 if (memcmp(cmd, "NG", 2) == 0) {
                     M5.Lcd.println("ERROR: UPDATE");
                     return;
