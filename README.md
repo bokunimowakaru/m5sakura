@@ -9,17 +9,17 @@ LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) をM5Stackに接�
 ![GPS(GNSS)位置情報送信](/images/ex05_gnss.gif)
 
 
-#### Example 1 ボタン送信機
+### Example 1 ボタン送信機
 
 ![ボタン送信](/images/ex01_lcd01.gif)
 ![ボタン受信](/images/ex01_wstool.gif)
 
-#### Example 2 マイコン温度送信機
+### Example 2 マイコン温度送信機
 
 ![温度送信](/images/ex02_lcd01.gif)
 ![温度受信](/images/ex02_wstool.gif)
 
-#### Example 3 LED制御
+### Example 3 LED制御
 
 ![LED制御送信](/images/ex03_wstool.gif)  
 
@@ -29,7 +29,7 @@ RGB LED Unit が無くても、M5Stack 上に表示したLCDの電球の画像�
 ![LED制御受信](/images/ex03_lcd01.gif)
 ![LED制御受信](/images/ex03_lcd02.gif)
 
-#### Example 4 温度・湿度センサ送信機
+### Example 4 温度・湿度センサ送信機
 
 M5Stack に ENVⅡ Unit または ENV Ⅲ Unit を接続してください。温度と湿度を送信します。  
 
@@ -41,7 +41,7 @@ M5Stack に ENVⅡ Unit または ENV Ⅲ Unit を接続してください。温
 ![Ambientで受信](/images/ex04_ambient.gif)
 ![LINEで受信](/images/ex04_line.gif)  
 
-#### Example 5 GPS(GNSS)位置情報送信機
+### Example 5 GPS(GNSS)位置情報送信機
 
 GPS(GNSS)用のアンテナ(LNA内蔵・アクティブタイプ)を接続してください。位置情報を送信します。  
 
@@ -56,7 +56,7 @@ GPS(GNSS)用のアンテナ(LNA内蔵・アクティブタイプ)を接続して
 ### WebSocket 確認ツール Message IoT さくらのモノプラットフォーム用
   [https://git.bokunimo.com/IchigoJam/message_iot/sipf.html](https://git.bokunimo.com/IchigoJam/message_iot/sipf.html)
 
-#### ファームウェア・アップデータ </sipf-FOTA-update/sipf-FOTA-update.ino>
+### ファームウェア・アップデータ [sipf-FOTA-update.ino](/sipf-FOTA-update/sipf-FOTA-update.ino)  
 
 M5Stackに書き込み、M5Stackの表面の右ボタンを押すと、さくらのモノプラットフォーム上のファームウェアをアップデートすることが来ます。  
 進捗状況も表示できるようにしました。  
