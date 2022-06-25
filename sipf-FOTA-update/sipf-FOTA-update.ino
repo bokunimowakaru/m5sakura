@@ -1,6 +1,19 @@
 /******************************************************************************
 モバイル網経由のファームウェア・アップデータです。
 
+(手順)
+1. 下記から対象デバイス用の最新ファームウェアをPCなどにダウンロードする
+    https://github.com/sakura-internet/sipf-std-client_nrf9160/releases
+    (一例) sipf-std-client_nrf9160_v0.4.4_scm-ltem1nrf_nrf9160ns.zip
+    ※注意：誤ったファームを使ってしまうと起動しなくなるので注意すること
+    ※とくに「nrf9160」の文字につられないでください
+2. さくらのモノプラットフォームのコントロールパネルにアクセスする
+    https://secure.sakura.ad.jp/cloud/
+3. モノプラットフォームの「プロジェクト」で対象のプロジェクトを選択する
+4. タブ「ファイル送受信」を選択する
+5. 手順1でダウンロードしたZIPフォルダ内のapp_update.binをアップロードする
+6. 本プログラムをM5Stackに書き込む
+7. M5Stackの右ボタンでFOTAによるファームウェアのアップデートができる
 
                                           Copyright (c) 2022 Wataru KUNINO
 *******************************************************************************
@@ -15,12 +28,6 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
  */
 /*****************************************************************************/
 
-
-/*
- * Copyright (c) 2021 Sakura Internet Inc.
- *
- * SPDX-License-Identifier: MIT
- */
 #include <Arduino.h>
 #include <M5Stack.h>
 #include <string.h>
