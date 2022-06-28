@@ -92,7 +92,12 @@ while True:
             delay(30)                                   # 再接続待ち時間(30秒)
             continue                                    # 再接続
         print('CONNECTED')
-    res=sock.recv()                                     # WebSocketを取得
+    try:
+        res = sock.recv()                               # WebSocketを取得
+    except WebSocketConnectionClosedException:          # セッション切断時
+        print('WebSocketConnectionClosedException')     # 例外発生表示
+        res = ''                                        # 受信結果を消去
+        continue                                        # 再接続
     date=datetime.datetime.today()                      # 日付を取得
     print(date.strftime('%Y/%m/%d %H:%M'), end='')      # 日付を出力
     print(', '+res)                                     # 受信データを出力
