@@ -88,8 +88,8 @@ while True:
         print('CONNECTED')
     try:
         res = sock.recv()                               # WebSocketを取得
-    except WebSocketConnectionClosedException:          # セッション切断時
-        print('WebSocketConnectionClosedException')     # 例外発生表示
+    except Exception as e:                              # セッション切断時など
+        print(e)                                        # エラー内容を表示
         res = ''                                        # 受信結果を消去
         continue                                        # 再接続
     date=datetime.datetime.today()                      # 日付を取得
