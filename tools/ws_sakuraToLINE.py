@@ -83,7 +83,7 @@ while True:
             sock = websocket.create_connection(url_ws)  # ソケットを作成
         except Exception as e:                          # 例外処理発生時
             print(e)                                    # エラー内容を表示
-            delay(30)                                   # 再接続待ち時間(30秒)
+            sleep(30)                                   # 再接続待ち時間(30秒)
             continue                                    # 再接続
         print('CONNECTED')
     try:
