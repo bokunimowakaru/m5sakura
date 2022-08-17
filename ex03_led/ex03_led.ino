@@ -22,7 +22,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #define PIN_LED_RGB 21                          // RGB LED 接続先IOポート番号
 #define INTERVAL_ms 30000                       // 受信間隔
 
-static uint8_t otid[256];                       // 受信データ表示用のバッファ
+static uint8_t otid[33];                        // 送信時のOTID保持用バッファ
 unsigned long time_prev = millis()-INTERVAL_ms; // CPU時刻(ms単位)の30秒前を保持
 /*  起動直後に受信を実行するために30秒を減算する。起動直後なので計算結果は
     マイナスになるが、time_prevは符号なし変数なので巨大なプラス値になる。

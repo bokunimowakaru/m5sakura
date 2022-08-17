@@ -20,7 +20,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #include <M5Stack.h>                            // M5Stack用ライブラリ組み込み
 #include "sipf_client.h"                        // さくらモノプラット用
 #define INTERVAL_ms 1800000                       // 送信間隔
-static uint8_t otid[256];                       // 受信データ表示用のバッファ
+static uint8_t otid[33];                        // 送信時のOTID保持用バッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
 boolean start = true;                           // 繰り返し実行

@@ -19,7 +19,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #include "sipf_client.h"                        // さくらモノプラット用
 #define INTERVAL_ms 30000                       // 送信間隔
 static float TEMP_ADJ = -25.0;                  // 温度値の補正用
-static uint8_t otid[33];                        // 受信データ表示用のバッファ
+static uint8_t otid[33];                        // 送信時のOTID保持用バッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
 int timeout_n = 0;                              // 通信タイムアウト回数

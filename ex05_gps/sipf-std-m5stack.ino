@@ -47,7 +47,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 /**
  * SIPF接続情報
  */
-// extern static uint8_t buff[256];
+static uint8_t buff[256];
 // extern static uint32_t cnt_btn1;
 
 static int resetSipfModule()

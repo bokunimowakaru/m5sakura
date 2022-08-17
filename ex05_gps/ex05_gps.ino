@@ -48,7 +48,7 @@ const float japan[JpMAP_N][4]={
     {128.30, 26.83, 214, 220}
 };                                              // 位置座標対応データ
 
-static uint8_t buff[256];                       // 受信データ表示用のバッファ
+static uint8_t otid[33];                        // 送信時のOTID保持用バッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
 int timeout_n = 0;                              // 通信タイムアウト回数
@@ -174,10 +174,10 @@ void loop() {
         M5.Lcd.printf("TX(tag_id=0x02 lon=%f)\n", lon);
         SipfCmdTx2(2, OBJ_TYPE_FLOAT32, (uint8_t*)&lon, 4);
         M5.Lcd.printf("TX(tag_id=0x03 alt=%f)... ", alt);
-        memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
-        int ret = SipfCmdTx3(3, OBJ_TYPE_FLOAT32, (uint8_t*)&alt, 4, buff);
+        memset(otid, 0, sizeof(otid));          // 変数otidの内容を消去
+        int ret = SipfCmdTx3(3, OBJ_TYPE_FLOAT32, (uint8_t*)&alt, 4, otid);
         if (ret == 0) {                         // 送信に成功した時
-            M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
+            M5.Lcd.printf("OK\nOTID: %s\n", otid); // 送信結果を表示
         }else{                                  // 送信に失敗した時
             if(ret == -3){                      // タイムアウト発生時
                 timeout_n++;                    // タイムアウト数をカウント
