@@ -22,7 +22,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #define PIN_LED_RGB 21                          // RGB LED 接続先IOポート番号
 #define INTERVAL_ms 30000                       // 受信間隔
 
-static uint8_t buff[256];                       // 受信データ表示用のバッファ
+static uint8_t otid[256];                       // 受信データ表示用のバッファ
 unsigned long time_prev = millis()-INTERVAL_ms; // CPU時刻(ms単位)の30秒前を保持
 /*  起動直後に受信を実行するために30秒を減算する。起動直後なので計算結果は
     マイナスになるが、time_prevは符号なし変数なので巨大なプラス値になる。
@@ -89,13 +89,13 @@ void loop() {
         sipf_drawResultWindow();                // RESULT画面の描画
         ledControl(led_stat);                   // LED制御
         M5.Lcd.printf("Requested RX data\n");   // リクエスト表示
-        memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
+        memset(otid, 0, sizeof(otid));          // 変数otidの内容を消去
         static SipfObjObject objs;              // 受信結果代入用の構造体
         uint64_t stm, rtm;                      // 送信時刻,受信時刻
         uint8_t remain, qty;                    // 残データ数,受信obj数
-        int ret = SipfCmdRx(buff, &stm, &rtm, &remain, &qty, &objs, 1);
+        int ret = SipfCmdRx(otid, &stm, &rtm, &remain, &qty, &objs, 1);
         if(ret > 0) {                           // 受信に成功した時
-            M5.Lcd.printf("OK\nOTID:\n%s\n", buff);
+            M5.Lcd.printf("OK\nOTID:\n%s\n", otid);
             M5.Lcd.printf("Recieved: ");        // 受信結果表示
             for(int i=0; i<4; i++) M5.Lcd.printf("%02X ",*(objs.value+i));
             led_stat = *objs.value;             // 受信1バイト目をLED輝度に設定

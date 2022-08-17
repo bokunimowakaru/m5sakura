@@ -19,7 +19,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 #include "sipf_client.h"                        // さくらモノプラット用
 #define INTERVAL_ms 30000                       // 送信間隔
 static float TEMP_ADJ = -25.0;                  // 温度値の補正用
-static uint8_t buff[256];                       // 受信データ表示用のバッファ
+static uint8_t otid[33];                        // 受信データ表示用のバッファ
 unsigned long time_prev = millis();             // マイコン時刻(ms単位)を保持
 unsigned long time_metric = millis();           // 同上、メータ表示用
 int timeout_n = 0;                              // 通信タイムアウト回数
@@ -77,10 +77,10 @@ void loop() {
         sipf_drawResultWindow();                // RESULT画面の描画
         byte tag_id = 0x01;                     // Tag ID を 0x01に設定
         M5.Lcd.printf("TX(tag_id=0x%02X temp=%f)\n", tag_id, temp);
-        memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
-        int ret = SipfCmdTx(tag_id, OBJ_TYPE_FLOAT32, (uint8_t*)&temp, 4, buff);
+        memset(otid, 0, sizeof(otid));          // 変数otidの内容を消去
+        int ret = SipfCmdTx(tag_id, OBJ_TYPE_FLOAT32, (uint8_t*)&temp, 4, otid);
         if (ret == 0) {                         // 送信に成功した時
-            M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
+            M5.Lcd.printf("OK\nOTID: %s\n", otid); // 送信結果を表示
         }else{                                  // 送信に失敗した時
             if(ret == -3){                      // タイムアウト発生時
                 timeout_n++;                    // タイムアウト数をカウント

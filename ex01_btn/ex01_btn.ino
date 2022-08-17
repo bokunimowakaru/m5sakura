@@ -17,8 +17,7 @@ https://github.com/sakura-internet/sipf-std-client_sample_m5stack
 
 #include <M5Stack.h>                            // M5Stack用ライブラリ組み込み
 #include "sipf_client.h"                        // さくらモノプラット用
-static uint8_t buff[256];                       // 受信データ表示用のバッファ
-int timeout_n = 0;                              // 通信タイムアウト回数
+static uint8_t otid[33];                        // 送信時のOTID保持用バッファ
 
 void reset(){                                   // LTEモジュールのリセット
     M5.Lcd.print("Booting... ");                // 起動中の表示
@@ -65,21 +64,13 @@ void loop() {
         sipf_drawResultWindow();                // RESULT画面の描画
         byte tag_id = 0x01;                     // Tag ID を 0x01に設定
         M5.Lcd.printf("TX(tag_id=0x%02X value=%d)\n", tag_id, value);
-        memset(buff, 0, sizeof(buff));          // 変数buffの内容を消去
-        int ret = SipfCmdTx(0x01, OBJ_TYPE_UINT32, (uint8_t*)&value, 4, buff);
+        memset(otid, 0, sizeof(otid));          // 変数otidの内容を消去
+        // 送信の実行
+        int ret = SipfCmdTx(tag_id, OBJ_TYPE_UINT32, (uint8_t*)&value, 4, otid);
         if (ret == 0) {                         // 送信に成功した時
-            M5.Lcd.printf("OK\nOTID: %s\n", buff); // 送信結果を表示
+            M5.Lcd.printf("OK\nOTID: %s\n", otid); // OTIDを表示
         }else{                                  // 送信に失敗した時
-            if(ret == -3){                      // タイムアウト発生時
-                timeout_n++;                    // タイムアウト数をカウント
-            }else{                              // 発生しなかったとき
-                timeout_n = 0;                  // タイムアウト数を0に戻す
-            }
-            M5.Lcd.printf("NG: %d(%d)\n", ret, timeout_n); // 応答値を表示
-            if(timeout_n >= 3){                 // 3回連続でタイムアウト
-                reset();                        // 関数リセットを呼び出し
-                timeout_n = 0;                  // タイムアウト数を0に戻す
-            }
+            M5.Lcd.printf("NG: %d(%d)\n", ret); // 応答値を表示
         }
     }
 }
