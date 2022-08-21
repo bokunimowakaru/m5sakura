@@ -42,7 +42,7 @@ void setup(){                                   // 起動時に一度だけ実�
     M5.begin();                                 // M5Stack用ライブラリの起動
     M5.Lcd.setBrightness(31);                   // 輝度を下げる（省エネ化）
     M5.Lcd.fillScreen(BLACK);                   // LCDを消去
-    shtSetup();                                 // 湿度センサの初期化
+    shtSetup(25,26);                            // 湿度センサの初期化
     analogMeterInit("Celsius",0,40,"RH%",0,100); //メータ初期化
     analogMeterSetNames("Temp.","Humi.");       // メータのタイトルを登録
     sipf_drawTitle("Example 04 Humidity",88);   // LCDにタイトルを表示

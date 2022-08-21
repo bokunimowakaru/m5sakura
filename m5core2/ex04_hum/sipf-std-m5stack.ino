@@ -53,12 +53,16 @@ static uint8_t buff[256];
 
 static int resetSipfModule()
 {
+  digitalWrite(32, LOW);
   digitalWrite(33, LOW);
   pinMode(33, OUTPUT);
+  pinMode(32, OUTPUT);
 
   // Reset要求
+  digitalWrite(32, HIGH);
   digitalWrite(33, HIGH);
   delay(10);
+  digitalWrite(32, LOW);
   digitalWrite(33, LOW);
 
   // UART初期化

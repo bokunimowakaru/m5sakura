@@ -6,6 +6,18 @@ forked from sakura-internet/sipf-std-client_sample_m5stack Core2
 さくらのモノプラットフォームを利用するためのM5Stack用のサンプル・プログラム集です。  
 LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) をM5Stackに接続し、モバイル通信網にセンサ情報を送信したり、M5Stackに接続したLEDを制御してみます。  
 
+## I2C用 Grove Port A 端子との干渉について
+
+SCO-M5SNRF9160のリセットにGPIO33を使用します。
+このため、Grove Port A 端子(GPIO32, GPIO33)は使用できません。  
+環境センサ ENVⅢ ユニットは、GPIO25, GPIO26に接続してください。  
+
+	Grove Port (ケーブル色)
+	GPIO26 SCL (M5Stack=白、Grove=黄)
+	GPIO25 SDA (M5Stack=黄、Grove=白)
+	5V (赤)
+	GND (黒)
+
 ## ご注意
 本フォルダは M5Stack Core2 用です。
 SCO-M5SNRF9160 は、M5Stack Core 以外には対応していません。  
@@ -16,7 +28,10 @@ SCO-M5SNRF9160 は、M5Stack Core 以外には対応していません。
 ### フォルダ名.ino ファイルの変更箇所
 
 	#include <M5Core2.h>
+	
 	M5.begin();
+	
+	shtSetup(25,26);
 
 ### sipf-std-m5stack.ino ファイルの変更箇所
 
