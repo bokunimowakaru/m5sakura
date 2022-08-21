@@ -4,7 +4,7 @@ forked from sakura-internet/sipf-std-client_sample_m5stack
 
 ## サンプル・プログラム集
 さくらのモノプラットフォームを利用するためのM5Stack用のサンプル・プログラム集です。  
-LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) をM5Stackに接続し、モバイル通信網にセンサ情報を送信したり、M5Stackに接続したLEDを制御してみます。  
+LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) を M5Stack Basic に接続し、モバイル通信網にセンサ情報を送信したり、M5Stackに接続したLEDを制御してみます。  
 
 ![GPS(GNSS)位置情報送信](/images/ex05_gnss.gif)
 
