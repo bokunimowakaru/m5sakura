@@ -11,12 +11,23 @@ LTEモジュール(GNSSつき) cat.M1 nRF9160 (SCO-M5SNRF9160) をM5Stackに接�
 SCO-M5SNRF9160のリセットにGPIO33を使用します。
 このため、Grove Port A 端子(GPIO32, GPIO33)は使用できません。  
 環境センサ ENVⅢ ユニットは、GPIO25, GPIO26に接続してください。  
+RGB LED ユニットは、GPIO25に接続してください。  
 
-	Grove Port (ケーブル色)
-	GPIO26 SCL (M5Stack=白、Grove=黄)
-	GPIO25 SDA (M5Stack=黄、Grove=白)
-	5V (赤)
-	GND (黒)
+	■ RGB LED ユニット
+	|Grove  |Port   (ケーブル色)              |
+	+-------+---------------------------------+
+	|GPIO26 |N.C.   (M5Stack=白、Grove=黄)    |
+	|GPIO25 |IN/OUT (M5Stack=黄、Grove=白)    |
+	|5V     |5V     (赤)                      |
+	|GND    |GND    (黒)                      |
+	
+	■ ENVⅢ ユニット
+	|Grove  |Port   (ケーブル色)              |
+	+-------+---------------------------------+
+	|GPIO26 |GPIO26 SCL (M5Stack=白、Grove=黄)|
+	|GPIO25 |GPIO25 SDA (M5Stack=黄、Grove=白)|
+	|5V     |5V         (赤)                  |
+	|GND    |GND        (黒)                  |
 
 ## ご注意 [重要な注意点]
 本フォルダは M5Stack Core2 用です。
